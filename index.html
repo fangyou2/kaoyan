@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>考研.pw</title>
+    <script src="http://cdn.gbtags.com/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://cdn.gbtags.com/twitter-bootstrap/3.2.0/js/bootstrap.js"></script>
+    <script src="http://cdn.gbtags.com/summernote/0.5.2/summernote.min.js"></script>
+    <link rel="stylesheet" rev="stylesheet" href="http://cdn.gbtags.com/twitter-bootstrap/3.2.0/css/bootstrap.css"
+          type="text/css" media="all"/>
+    <link rel="stylesheet" rev="stylesheet" href="http://cdn.gbtags.com/font-awesome/4.1.0/css/font-awesome.min.css"
+          type="text/css" media="all"/>
+    <link rel="stylesheet" rev="stylesheet" href="http://cdn.gbtags.com/summernote/0.5.2/summernote.css" type="text/css"
+          media="all"/>
+    <script src="http://cdn.bootcss.com/summernote/0.8.2/lang/summernote-zh-CN.min.js"></script>
+    <script src="http://static.runoob.com/assets/vue/1.0.11/vue.min.js"></script>
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+
+        .t {
+            list-style-type: none;
+            display: inline;
+            margin-right: 10px;
+            font-family: Consolas;
+            font-size: small;
+        }
+
+        .t:hover {
+            cursor: pointer;
+            color: #f6f6f6;
+        }
+
+        .c {
+            border: solid thin #eee;
+            margin-right: 10px;
+            padding-left: 0;
+            padding-right: 0;
+            background-color: white;
+        }
+
+        .c1 {
+            list-style-type: none;
+            padding-left: 5px;
+            background-color: #f6f6f6;
+            margin-left: 5px;
+            margin-right: 5px;
+            border-bottom: solid thin #eee;
+            padding-bottom: 5px;
+            padding-top: 5px;
+            font-size: small;
+        }
+
+        .active {
+            background-color: #96b97d;
+            color: white;
+            font-weight: bold;
+        }
+
+        .c1:hover {
+            font-weight: bold;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+
+        ul {
+            padding-left: 0;
+        }
+
+        .c2 {
+            background-color: #fbfbfb;
+            height: 30px;
+            padding-top: 5px;
+            margin-top: 4px;
+            margin-bottom: 4px;
+            border: solid thin #eee;
+        }
+
+        .c2 > a:hover {
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .c2 > a {
+            color: darkgray;
+            cursor: pointer;
+            font-size: small;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .c11 {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            background-color: #efefef;
+            color: darkgray;
+            padding-left: 5px;
+        }
+
+        .c12 {
+            color: green;
+            font-weight: bold;
+        }
+
+        .c22 {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    </style>
+</head>
+<body style="background-color: #f6f6f6" id="app">
+<div class="row clearfix" style="padding-top: 20px;padding-bottom: 20px">
+    <div class="col-md-7 col-md-offset-1 column">
+        <img src="img/logo.png">
+    </div>
+    <div class="col-md-3 column" style="margin-top: 5px">
+        <input class="form-control" type="text" placeholder="搜索........">
+    </div>
+</div>
+<div class="row clearfix" style="background-color: #96b97d;padding-top: 8px;margin-bottom: 20px">
+    <div class="col-md-9 col-md-offset-1 column ">
+        <ul style="color: white">
+            <li class="t">首页</li>
+            <li onclick="app.get('{{parent.parent}}')" v-for="parent in parents" class="t">{{parent.parent}}</li>
+            <li class="t">更多...</li>
+            <li class="t"><input hidden="hidden" id="file" onkeydown="app.addfile()" type="text" style="color: black" placeholder="添加文件夹"></li>
+        </ul>
+    </div>
+</div>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-2 column c">
+            <p class="c11">
+                {{parent1}}</p>
+            <div>
+                <ul>
+                    <li onclick="app.active(this)" id="{{$index}}" v-for="article in articles" class="c1">
+                        <font class="changeShow" hidden="hidden">{{article.id}}.</font>{{article.title}}
+                    </li>
+                </ul>
+                <!--&lt;!&ndash;list1中二标题&ndash;&gt;-->
+                <!--<p class="c12">HTML教程</p>-->
+                <!--<ul>-->
+                <!--<li class="c1">HTML教程1</li>-->
+                <!--<li class="c1">HTML教程1</li>-->
+                <!--<li class="c1">1</li>-->
+                <!--<li class="c1">HTML教程1</li>-->
+                <!--<li class="c1">1</li>-->
+                <!--<li class="c1">1</li>-->
+                <!--</ul>-->
+            </div>
+        </div>
+        <div class="col-md-9 column c">
+            <div class="c2">
+                <a onclick="app.preB()" class="pull-left">←{{preA.title}}</a>
+                <a onclick="app.nextB()" class="pull-right">{{nextA.title}}→</a>
+            </div>
+            <div class="c22">
+                <div id="content">
+                </div>
+                <div id="content1" hidden="hidden">
+                    <button onclick="app.add()" class="btn btn-info pull-right">添加
+                    </button>
+                    <button onclick="app.delete(this)" id="{{nowing.id}}"
+                            class="btn btn-danger pull-right">删除
+                    </button>
+                    <button onclick="app.update(this)" id="{{nowing.id}}"
+                            class="btn btn-success pull-right">更新
+                    </button>
+                    <input onblur='$(".changeShow").attr("hidden","hidden");' onfocus='$(".changeShow").removeAttr("hidden");' onkeydown="app.change()" style="width: 10%;"  id="change" type="number"
+                           class="form-control pull-right" placeholder="对调位置">
+                    <input style="width: 50%;margin-top: 10px;margin-bottom: 10px" id="title" type="text"
+                           class="form-control" placeholder="标题">
+                    <div id="editor"></div>
+                </div>
+            </div>
+            <div class="c2">
+                <a onclick="app.preB()" class="pull-left">←{{preA.title}}</a>
+                <a onclick="app.nextB()" class="pull-right">{{nextA.title}}→</a>
+            </div>
+        </div>
+        <!--大分类-->
+        <!--<div class="col-md-2 column c">-->
+        <!--321-->
+        <!--</div>-->
+    </div>
+    <hr>
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <h5 class="text-center" style="color: darkgray">
+                Copyright © 2016-2017 考研.pw by <font style="cursor: pointer"
+                                                     onclick="app.moshi()">fangyouvip@163.com</font>
+            </h5>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    $('#editor').summernote({height: 450, lang: 'zh-CN'});
+    var app = new Vue({
+        el: '#app',
+        data: {
+            //所有匹配文章
+            articles: [],
+            //下一篇文章
+            nextA: {},
+            //上一篇文章
+            preA: {},
+            //文件夹名称
+            parent1: "",
+            //当前文章
+            nowing: {},
+            //是否编辑模式
+            admin: false,
+            parents:[]
+        },
+        methods: {
+            addfile: function () {
+                var e = event || window.event || arguments.callee.caller.arguments[0];
+                if(e.keyCode==13){
+                    var file=$("#file").val();
+                    app.parent1=file;
+                    $.ajax({
+                        url: "add.php",
+                        data: { title: file, content: file,parent: file},
+                        success: function () {
+                            alert("添加文件夹成功");
+                            app.get(file);
+                            app.getParent();
+                        }
+                    });
+                }
+            },
+            change: function () {
+                var e = event || window.event || arguments.callee.caller.arguments[0];
+                if(e.keyCode==13){
+                    var id1=$("#change").val();
+                    $.ajax({
+                        url: "change.php",
+                        data: { id1: id1, id2: app.nowing.id},
+                        success: function () {
+                            alert("调整顺序成功");
+                            app.get(app.parent1);
+                        }
+                    });
+                }
+            },
+            //编辑模式开启/关闭
+            moshi: function () {
+                $("#content").attr("hidden","hidden");
+                $("#content1").attr("hidden","hidden");
+                $("#file").attr("hidden","hidden");
+                $(".changeShow").attr("hidden","hidden");
+                alert('模式切换成功');
+                if (this.admin) {
+                    this.admin = false;
+                    $("#content").removeAttr("hidden");
+                } else {
+                    this.admin = true;
+                    $("#content1").removeAttr("hidden");
+                    $("#file").removeAttr("hidden");
+                }
+            },
+            update: function (temp) {
+                var id = temp.id;
+                var title = $("#title").val();
+                var content = $('#editor').code();
+                $.ajax({
+                    url: "update.php",
+                    type:"post",
+                    data: {id: id, title: title, content: content, parent: app.parent1},
+                    success: function () {
+                        alert("更新成功");
+                        app.get(app.parent1);
+                    }
+                });
+            },
+            delete: function (temp) {
+                var id = temp.id;
+                $.ajax({
+                    url: "delete.php",
+                    data: {id: id},
+                    success: function () {
+                        alert("删除成功");
+                        app.get(app.parent1);
+                        app.getParent();
+                    }
+                });
+            },
+            add: function () {
+                var title = $("#title").val();
+                var content = $('#editor').code();
+                $.ajax({
+                    url: "add.php",
+                    type:"post",
+                    data: {title: title, content: content, parent: app.parent1},
+                    success: function () {
+                        alert("添加成功");
+                        app.get(app.parent1);
+                    }
+                });
+            },
+            //选中文章变化
+            active: function (temp) {
+                //list1选中显示绿底
+                $(temp).siblings("li").removeClass("active");
+                $(temp).addClass("active");
+                var n = parseInt(temp.id);
+                //左右标签是否显示
+                $(".pull-left").removeAttr("hidden");
+                $(".pull-right").removeAttr("hidden");
+                if (n == 0) {
+                    $(".pull-left").attr("hidden", "hidden");
+                }
+                if (n + 1 == app.articles.length) {
+                    $(".pull-right").attr("hidden", "hidden");
+                }
+                app.nextA = app.articles[n + 1];
+                app.preA = app.articles[n - 1];
+                //得到内容
+                $.ajax({
+                    url: "getById.php",
+                    data: {id: app.articles[n].id},
+                    success: function (html) {
+                        var result = JSON.parse(html);
+                        app.nowing = result;
+                        $("#content").empty();
+                        $("#content").append(result.content);
+                        $("#title").val(result.title);
+                        $('#editor').code(result.content);
+                    }
+                });
+            },
+            get: function (temp) {
+                this.parent1 = temp;
+                //getByParent
+                $.ajax({
+                    url: "getByParent.php",
+                    data: {parent: temp},
+                    success: function (html) {
+                        app.articles = JSON.parse(html);
+                        window.setTimeout("app.active($('.c1')[0])", 200);
+                    }
+                });
+            },
+            getParent: function () {
+                $.ajax({
+                    url: "getParent.php",
+                    success: function (html) {
+                        app.parents = JSON.parse(html);
+                    }
+                });
+            },
+            //上一个
+            preB: function () {
+                app.active($(".active").prev()[0])
+            },
+            //下一个
+            nextB: function () {
+                app.active($(".active").next()[0])
+            }
+        },
+        ready: function () {
+            //初始化
+            this.getParent();
+            this.get("高数");
+        }
+    })
+</script>
